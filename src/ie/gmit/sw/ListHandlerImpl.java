@@ -5,7 +5,7 @@ import java.util.List;
 
 /* The Processor class is responsible for handling lists
  * It will compare 2 lists against each other
- * Convert sting lists into 
+ * Convert string lists into hash code lists
  */
 public class ListHandlerImpl implements ListHandler{
 	
@@ -28,7 +28,7 @@ public class ListHandlerImpl implements ListHandler{
 		}// for each element in b 
 		similarity = similarity / b.size(); //get a percentage
 		
-		return similarity;
+		return similarity * 100;
 	}// compare method
 	
 	
