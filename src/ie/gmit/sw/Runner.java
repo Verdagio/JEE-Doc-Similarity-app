@@ -12,8 +12,8 @@ public class Runner {
 		List<Integer> c = new LinkedList<>();
 		
 
-		Processor p = new Processor("hp2.txt");
-		Processor p1 = new Processor("hp4.txt");
+		FileParser p = new FileParser("hp2.txt");
+		FileParser p1 = new FileParser("hp.txt");
 		List<Integer> a = new LinkedList<>();
 		
 		try {
