@@ -7,26 +7,18 @@ public class Runner {
  
 	public static void main(String[] args) {
 		
-		ComparatorService cs = new ComparatorService();
-				
-		List<Integer> c = new LinkedList<>();
-		
-
-		FileParser p = new FileParser("hp2.txt");
-		FileParser p1 = new FileParser("hp.txt");
-		List<Integer> a = new LinkedList<>();
+		Worker w = new Worker("hp2.txt");
+		new Thread(w).start();
 		
 		try {
-			a = p.readFile();
-			c = p1.readFile();
-		} catch (Exception e) {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		System.out.println(cs.compare(a, c) + "%");
-		System.out.println(cs.getSimilarity());
-		
+		System.out.println(w.getSimilarity());
+		System.out.println(w.showPhrases());
 	}//main
 
 }// class

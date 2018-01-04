@@ -6,7 +6,7 @@ import java.util.Map;
 public class Book {
 	
 	private String name;
-	private List<Integer> shingleData;
+	private List<Integer> shingles;
 	private Map<Integer, String> hashData;
 	private int bookId;
 	private List<String> data;				// TODO should this be used or not
@@ -15,10 +15,10 @@ public class Book {
 		super();
 	}
 
-	public Book(String name, List<Integer> shingleData, Map<Integer, String> hashData) {
+	public Book(String name, List<Integer> shingles, Map<Integer, String> hashData) {
 		super();
 		this.name = name;
-		this.shingleData = shingleData;
+		this.shingles = shingles;
 		this.hashData = hashData;
 	}
 
@@ -26,6 +26,8 @@ public class Book {
 		super();
 		this.name = name;
 	}
+	
+	// getters & setters
 
 	public String getName() {
 		return name;
@@ -36,11 +38,11 @@ public class Book {
 	}
 
 	public List<Integer> getShingleData() {
-		return shingleData;
+		return shingles;
 	}
 
 	public void setShingleData(List<Integer> shingleData) {
-		this.shingleData = shingleData;
+		this.shingles = shingleData;
 	}
 
 	public Map<Integer, String> getHashData() {

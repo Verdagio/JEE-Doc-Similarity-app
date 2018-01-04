@@ -68,4 +68,8 @@ public class FileParser {
 		this.file = new File(fileName);
 	}
 
+	public static Map<Integer, String> getHashTable() {
+		return hashTable;
+	}
+
 }//class

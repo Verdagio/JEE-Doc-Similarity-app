@@ -15,6 +15,7 @@ public class ServicePollHandler extends HttpServlet {
 		
 		String title = req.getParameter("txtTitle");
 		String taskNumber = req.getParameter("frmTaskNumber");
+		String similarity = req.getParameter("result");
 		int counter = 1;
 		if (req.getParameter("counter") != null){
 			counter = Integer.parseInt(req.getParameter("counter"));
@@ -27,12 +28,13 @@ public class ServicePollHandler extends HttpServlet {
 		out.print("<H1>Processing request for Job#: " + taskNumber + "</H1>");
 		out.print("<H3>Document Title: " + title + "</H3>");
 		out.print("<b><font color=\"ff0000\">A total of " + counter + " polls have been made for this request.</font></b> ");
-		out.print("Place the final response here... a nice table (or graphic!) of the document similarity...");
+		
 		
 		out.print("<form name=\"frmRequestDetails\">");
 		out.print("<input name=\"txtTitle\" type=\"hidden\" value=\"" + title + "\">");
 		out.print("<input name=\"frmTaskNumber\" type=\"hidden\" value=\"" + taskNumber + "\">");
 		out.print("<input name=\"counter\" type=\"hidden\" value=\"" + counter + "\">");
+		out.print("Similarity: " + similarity + "%");
 		out.print("</form>");								
 		out.print("</body>");	
 		out.print("</html>");	
