@@ -7,18 +7,9 @@ public class Runner {
  
 	public static void main(String[] args) {
 		
-		Worker w = new Worker("hp2.txt");
-		new Thread(w).start();
+		Processor p = new Processor("hp4.txt");
 		
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		System.out.println(w.getSimilarity());
-		System.out.println(w.showPhrases());
+		System.out.println(p.runner());
 	}//main
 
 }// class

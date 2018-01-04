@@ -4,13 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 public class Book {
-	
+
 	private String name;
 	private List<Integer> shingles;
 	private Map<Integer, String> hashData;
 	private int bookId;
-	private List<String> data;				// TODO should this be used or not
-	
+
 	public Book() {
 		super();
 	}
@@ -26,7 +25,7 @@ public class Book {
 		super();
 		this.name = name;
 	}
-	
+
 	// getters & setters
 
 	public String getName() {
@@ -53,14 +52,6 @@ public class Book {
 		this.hashData = hashData;
 	}
 
-	public List<String> getData() {
-		return data;
-	}
-
-	public void setData(List<String> data) {
-		this.data = data;
-	}
-	
 	public int getBookId() {
 		return bookId;
 	}
@@ -68,4 +59,4 @@ public class Book {
 	public void setBookId(int bookId) {
 		this.bookId = bookId;
 	}
-}//class
+}// class
