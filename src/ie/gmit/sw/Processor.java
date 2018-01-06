@@ -1,6 +1,7 @@
 package ie.gmit.sw;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,9 +10,10 @@ public class Processor {
 	private String fileName;
 	private boolean inProgress;
 	private List<Worker> q;
+	InputStream is;
 
-	public Processor(String fileName) {
-
+	public Processor(String fileName, InputStream is) {
+		this.is = is;
 		this.fileName = fileName;
 		this.q = new LinkedList<Worker>();
 		this.inProgress = false;
@@ -21,7 +23,7 @@ public class Processor {
 		float percentage = 0;
 		String phrases = null;
 		//Worker w =;
-		q.add(new Worker(fileName));
+		q.add(new Worker(fileName, is));
 
 		do {
 			if (!inProgress) {

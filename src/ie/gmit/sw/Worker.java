@@ -1,5 +1,7 @@
 package ie.gmit.sw;
 
+import java.io.InputStream;
+
 /* The worker class is a runnable class with intent to replace
  * a typical runner class which would connect all the pieces 
  * of the puzzle together. The worker will do the grunt work 
@@ -11,12 +13,22 @@ public class Worker implements Runnable {
 	private ComparatorService cs;
 	private DataStore ds;
 	private float similarity;
+	private InputStream is;
 
+	public Worker(String fileName, InputStream is) {
+		this.ds = new DataStore();
+		this.fp = new FileParser(fileName);
+		this.cs = new ComparatorService();
+		this.is = is;
+	}// constructor
+	
 	public Worker(String fileName) {
 		this.ds = new DataStore();
 		this.fp = new FileParser(fileName);
 		this.cs = new ComparatorService();
 	}// constructor
+	
+	
 
 	public void run() {
 

@@ -3,6 +3,8 @@ package ie.gmit.sw;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.Map;
 public class FileParser {
 
 	private File file;
+	private InputStream is;
 	private List<Integer> shingles;
 	private static Map<Integer, String> hashTable;
 
@@ -19,6 +22,12 @@ public class FileParser {
 		this.shingles = new LinkedList<Integer>();
 		this.hashTable = new HashMap<Integer, String>();
 	}// constructor
+	
+	public FileParser(InputStream is) {
+		this.is = is;
+		this.shingles = new LinkedList<Integer>();
+		this.hashTable = new HashMap<Integer, String>();
+	}
 
 	/*
 	 * ReadFile read in a file and add shingles to a list
@@ -27,8 +36,16 @@ public class FileParser {
 	public List<Integer> readFile() throws Exception {
 		String shingle = "";
 		int i = 0;
+		BufferedReader br = null;
 
-		BufferedReader br = new BufferedReader(new FileReader(file)); // read the file passed into our constructor
+	
+		if(file != null) {
+			br = new BufferedReader(new FileReader(file)); // read the file passed into our constructor
+		} else {
+			br = new BufferedReader(new InputStreamReader(is)); // otherwise read the file as an input stream
+		}
+		
+		
 		String line = null;
 
 		while ((line = br.readLine()) != null) { // read in each line while its not null
