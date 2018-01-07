@@ -1,5 +1,6 @@
 package ie.gmit.sw;
 
+import java.io.File;
 import java.io.InputStream;
 
 /* The worker class is a runnable class with intent to replace
@@ -16,14 +17,14 @@ public class Worker implements Runnable {
 	private InputStream is;
 
 	public Worker(String fileName, InputStream is) {
-		this.ds = new DataStore();
-		this.fp = new FileParser(fileName);
+		this.ds = new DataStore(fileName, new File ("books.data"));
+		this.fp = new FileParser(is);
 		this.cs = new ComparatorService();
 		this.is = is;
 	}// constructor
 	
 	public Worker(String fileName) {
-		this.ds = new DataStore();
+		this.ds = new DataStore(fileName, new File ("books.data"));
 		this.fp = new FileParser(fileName);
 		this.cs = new ComparatorService();
 	}// constructor

@@ -23,7 +23,7 @@ public class Processor {
 		float percentage = 0;
 		String phrases = null;
 		//Worker w =;
-		q.add(new Worker(fileName, is));
+		q.add(new Worker("lib/wap.txt", is));
 
 		do {
 			if (!inProgress) {

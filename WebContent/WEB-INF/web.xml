@@ -8,10 +8,6 @@
      and the like in this deployment descriptor. These can be configured as context-param elements and then
      read and initialised by a start-up servlet.
   </description>
-  <context-param>
-    <param-name>upload.location</param-name>
-    <param-value>/uploads</param-value>
-  </context-param>
   <servlet>
     <servlet-name>service-request-handler</servlet-name>
     <servlet-class>ie.gmit.sw.ServiceHandler</servlet-class>

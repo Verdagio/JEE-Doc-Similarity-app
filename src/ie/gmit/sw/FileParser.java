@@ -40,9 +40,11 @@ public class FileParser {
 
 	
 		if(file != null) {
-			br = new BufferedReader(new FileReader(file)); // read the file passed into our constructor
+			br = new BufferedReader(new FileReader(file)); // read the file passed into our constructo
+			System.out.println("using file reader");
 		} else {
 			br = new BufferedReader(new InputStreamReader(is)); // otherwise read the file as an input stream
+			System.out.println("Using input stream reader");
 		}
 		
 		

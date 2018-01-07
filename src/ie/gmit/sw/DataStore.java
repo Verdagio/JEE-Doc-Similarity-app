@@ -1,5 +1,7 @@
 package ie.gmit.sw;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,30 +15,55 @@ import com.db4o.ta.TransparentPersistenceSupport;
 import xtea_db4o.XTEA;
 import xtea_db4o.XTeaEncryptionStorage;
 
-import java.lang.System.*;
-
 public class DataStore {
+	private InputStream is;
+	private String fileName;
 	private ObjectContainer db = null;
 	private List<Book> books = new LinkedList<Book>();
-
-	public DataStore() {
+	
+	public DataStore(String fileName, File file) {
+		this.fileName = fileName;
+		if (books.isEmpty()) {
+			init();
+		}
 
 		EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
 		config.common().add(new TransparentPersistenceSupport());
-		config.common().updateDepth(7); // propagate updates
+		config.common().updateDepth(Integer.MAX_VALUE); // propagate updates
 
 		// using xtea library for encryption
 		config.file().storage(new XTeaEncryptionStorage("password", XTEA.ITERATIONS64));
 
-		db = Db4oEmbedded.openFile(config, "books.data");
-
-		init();
+		db = Db4oEmbedded.openFile(config, "./webapps/jaccard/books.data");
 
 		addBooksToDB();
 		showAllBooks();
 		findBook(books.get(0));
+		
+		db.close();
 
-	}// runner
+	}// construct using filename
+
+//	public DataStore(InputStream is) {
+//		this.is = is;
+//		if (books.isEmpty()) {
+//			init();
+//		}
+//
+//		EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
+//		config.common().add(new TransparentPersistenceSupport());
+//		config.common().updateDepth(7); // propagate updates
+//
+//		// using xtea library for encryption
+//		config.file().storage(new XTeaEncryptionStorage("password", XTEA.ITERATIONS64));
+//
+//		db = Db4oEmbedded.openFile(config, "books.data");
+//
+//		addBooksToDB();
+//		showAllBooks();
+//		findBook(books.get(0));
+//
+//	}// consturuct using input stream
 
 	public void addBooksToDB() {
 		for (Book b : books) {
@@ -80,20 +107,18 @@ public class DataStore {
 	 * Init should initialize the database adding at least one book to it...
 	 */
 	public void init() {
-
-		if (books.isEmpty()) {
-			FileParser fp = new FileParser("hp.txt");
-			Book b = new Book(fp.getFileName());
-			b.setBookId(fp.getFileName().hashCode());
-			try {
-				b.setShingleData(fp.readFile());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			b.setHashData(fp.getHashTable());
-			books.add(b);
+		FileParser fp = new FileParser(fileName);
+		
+		Book b = new Book(fp.getFileName());
+		b.setBookId(fp.getFileName().hashCode());
+		try {
+			b.setShingleData(fp.readFile());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		b.setHashData(fp.getHashTable());
+		books.add(b);
 
 	}// init
 

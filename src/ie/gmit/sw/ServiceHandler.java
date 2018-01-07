@@ -19,7 +19,6 @@ public class ServiceHandler extends HttpServlet {
 	 *   2) An Chain of Responsibility: declare the initial handler or a full chain object
 	 *   1) A Proxy: Declare a shared proxy here and a request proxy inside doGet()
 	 */
-	private String environmentalVariable = null; //Demo purposes only. Rename this variable to something more appropriate
 	private static long jobNumber = 0;
 
 
@@ -33,7 +32,6 @@ public class ServiceHandler extends HttpServlet {
 		
 		//Reads the value from the <context-param> in web.xml. Any application scope variables 
 		//defined in the web.xml can be read in as follows:
-		environmentalVariable = ctx.getInitParameter("SOME_GLOBAL_OR_ENVIRONMENTAL_VARIABLE"); 
 	}
 
 
@@ -59,14 +57,7 @@ public class ServiceHandler extends HttpServlet {
 		Part part = req.getPart("txtDocument");
 		
 		Processor p = new Processor(title, part.getInputStream());
-		
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+				
 		String result = p.runner();
 		
 		//Step 4) Process the input and write out the response. 
@@ -94,7 +85,7 @@ public class ServiceHandler extends HttpServlet {
 		//Output some useful information for you (yes YOU!)
 		out.print("<div id=\"r\"></div>");
 		out.print("<font color=\"#993333\"><b>");
-		out.print("Environmental Variable Read from web.xml: " + environmentalVariable);
+		out.print("result from comparison: " + result);
 		out.print("<br>This servlet should only be responsible for handling client request and returning responses. Everything else should be handled by different objects.");
 		out.print("Note that any variables declared inside this doGet() method are thread safe. Anything defined at a class level is shared between HTTP requests.");				
 		out.print("</b></font>");
@@ -115,6 +106,7 @@ public class ServiceHandler extends HttpServlet {
 		out.print("<form name=\"frmRequestDetails\" action=\"poll\">");
 		out.print("<input name=\"txtTitle\" type=\"hidden\" value=\"" + title + "\">");
 		out.print("<input name=\"frmTaskNumber\" type=\"hidden\" value=\"" + taskNumber + "\">");
+		out.print("<input name=\"result\" type=\"hidden\" value=\"" + result + "\">");
 		out.print("</form>");								
 		out.print("</body>");	
 		out.print("</html>");	
