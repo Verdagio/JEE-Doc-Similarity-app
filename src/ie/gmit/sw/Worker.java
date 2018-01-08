@@ -7,6 +7,8 @@ import java.io.InputStream;
  * a typical runner class which would connect all the pieces 
  * of the puzzle together. The worker will do the grunt work 
  * for us by way of task delegation to the respective classes.
+ * Could not get this working for now, therefore I'm leaving it here but
+ * not using it at the moment.
  */
 public class Worker implements Runnable {
 
@@ -16,30 +18,29 @@ public class Worker implements Runnable {
 	private float similarity;
 	private InputStream is;
 
-	public Worker(String fileName, InputStream is) {
-		this.ds = new DataStore(fileName, new File ("books.data"));
-		this.fp = new FileParser(is);
+	public Worker(InputStream is, InputStream db) {
+		this.ds = new DataStore(db);
 		this.cs = new ComparatorService();
 		this.is = is;
 	}// constructor
 	
-	public Worker(String fileName) {
-		this.ds = new DataStore(fileName, new File ("books.data"));
+	public Worker(String fileName, String fileB) {
+		this.ds = new DataStore(fileB);
 		this.fp = new FileParser(fileName);
 		this.cs = new ComparatorService();
 	}// constructor
 	
 	
-
+	// this will handle the logic 
 	public void run() {
-
+		
 		Book dbBook = ds.getBook();
 		Book bk = new Book();
 
 		try { // try to populate a book object
 			bk.setName(fp.getFileName());
-			bk.setBookId(this.hashCode());
-			bk.setShingleData(fp.readFile());
+			bk.setId(this.hashCode());
+			bk.setShingleData(fp.readInputStream(this.is));
 			bk.setHashData(fp.getHashTable());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

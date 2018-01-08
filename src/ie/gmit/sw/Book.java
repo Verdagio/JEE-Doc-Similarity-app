@@ -3,12 +3,15 @@ package ie.gmit.sw;
 import java.util.List;
 import java.util.Map;
 
+/* Book Is an object class that stores relevant data
+ * that is required for this project
+ */
 public class Book {
 
 	private String name;
 	private List<Integer> shingles;
 	private Map<Integer, String> hashData;
-	private int bookId;
+	private int id;
 
 	public Book() {
 		super();
@@ -52,11 +55,11 @@ public class Book {
 		this.hashData = hashData;
 	}
 
-	public int getBookId() {
-		return bookId;
+	public int getId() {
+		return id;
 	}
 
-	public void setBookId(int bookId) {
-		this.bookId = bookId;
+	public void setId(int id) {
+		this.id = id;
 	}
 }// class

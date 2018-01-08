@@ -37,10 +37,7 @@ public class ServicePollHandler extends HttpServlet {
 		out.print("</form>");								
 		out.print("</body>");	
 		out.print("</html>");	
-		
-		out.print("<script>");
-		out.print("var wait=setTimeout(\"document.frmRequestDetails.submit();\", 5000);"); //Refresh every 5 seconds
-		out.print("</script>");
+
 	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

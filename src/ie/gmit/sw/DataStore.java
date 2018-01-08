@@ -1,6 +1,5 @@
 package ie.gmit.sw;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,16 +15,15 @@ import xtea_db4o.XTEA;
 import xtea_db4o.XTeaEncryptionStorage;
 
 public class DataStore {
-	private InputStream is;
+	private InputStream is = null;
 	private String fileName;
 	private ObjectContainer db = null;
 	private List<Book> books = new LinkedList<Book>();
 	
-	public DataStore(String fileName, File file) {
+	public DataStore(String fileName) {
+		//String path = "";
 		this.fileName = fileName;
-		if (books.isEmpty()) {
-			init();
-		}
+		init();
 
 		EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
 		config.common().add(new TransparentPersistenceSupport());
@@ -38,32 +36,29 @@ public class DataStore {
 
 		addBooksToDB();
 		showAllBooks();
-		findBook(books.get(0));
 		
-		db.close();
+		//db.close();
 
 	}// construct using filename
+	
+	public DataStore(InputStream is) {
+		this.fileName = "inputStream";
+		this.is = is;
+		init();
 
-//	public DataStore(InputStream is) {
-//		this.is = is;
-//		if (books.isEmpty()) {
-//			init();
-//		}
-//
-//		EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
-//		config.common().add(new TransparentPersistenceSupport());
-//		config.common().updateDepth(7); // propagate updates
-//
-//		// using xtea library for encryption
-//		config.file().storage(new XTeaEncryptionStorage("password", XTEA.ITERATIONS64));
-//
-//		db = Db4oEmbedded.openFile(config, "books.data");
-//
-//		addBooksToDB();
-//		showAllBooks();
-//		findBook(books.get(0));
-//
-//	}// consturuct using input stream
+		EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
+		config.common().add(new TransparentPersistenceSupport());
+		config.common().updateDepth(Integer.MAX_VALUE); // propagate updates
+
+		// using xtea library for encryption
+		config.file().storage(new XTeaEncryptionStorage("password", XTEA.ITERATIONS64));
+
+		db = Db4oEmbedded.openFile(config, "./webapps/jaccard/books.data");
+
+		addBooksToDB();
+		showAllBooks();
+		
+	}// 
 
 	public void addBooksToDB() {
 		for (Book b : books) {
@@ -89,12 +84,12 @@ public class DataStore {
 	public void findBook(Book b) {
 		Query query = db.query();
 		query.constrain(Book.class);
-		query.descend("bookId").constrain(b.getBookId());
+		query.descend("bookId").constrain(b.getId());
 		ObjectSet<Book> result = query.execute();
 		if (result.hasNext()) {
-			System.out.println("[getBookID] found " + b.getBookId());
+			System.out.println("[getBookID] found " + b.getId());
 		} else {
-			System.out.println("[Error] " + b.getBookId() + " not in Database");
+			System.out.println("[Error] " + b.getId() + " not in Database");
 		} // if else
 	}// Get book SODA query
 
@@ -108,11 +103,15 @@ public class DataStore {
 	 */
 	public void init() {
 		FileParser fp = new FileParser(fileName);
-		
+	
 		Book b = new Book(fp.getFileName());
-		b.setBookId(fp.getFileName().hashCode());
+		b.setId(fp.getFileName().hashCode());
 		try {
-			b.setShingleData(fp.readFile());
+			if(is != null) {
+				b.setShingleData(fp.readInputStream(is));
+			}else {
+				b.setShingleData(fp.readFile());
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -121,5 +120,9 @@ public class DataStore {
 		books.add(b);
 
 	}// init
+	
+	public void shutDown() {
+		db.close();
+	}
 
 }

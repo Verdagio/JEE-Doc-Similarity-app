@@ -3,6 +3,7 @@ package ie.gmit.sw;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /* The Processor class is responsible for handling lists
  * It will compare 2 lists against each other

@@ -29,9 +29,7 @@ public class ServiceHandler extends HttpServlet {
 	 */
 	public void init() throws ServletException {
 		ServletContext ctx = getServletContext(); //The servlet context is the application itself.
-		
-		//Reads the value from the <context-param> in web.xml. Any application scope variables 
-		//defined in the web.xml can be read in as follows:
+	
 	}
 
 
@@ -52,59 +50,75 @@ public class ServiceHandler extends HttpServlet {
 		PrintWriter out = resp.getWriter(); 
 		
 		//Step 3) Get any submitted form data. These variables are local to this method and thread safe...
-		String title = req.getParameter("txtTitle");
 		String taskNumber = req.getParameter("frmTaskNumber");
 		Part part = req.getPart("txtDocument");
+		Part pt2 = req.getPart("dbFile");
+		String path = req.getParameter("path");
 		
-		Processor p = new Processor(title, part.getInputStream());
-				
-		String result = p.runner();
+		// For whatever reason the DB4O would return null when trying to use threads
+		// this was a thread queue implementation which would handle the whole shibang
+		// but didn't work out in the end...
+//		Processor p = new Processor(part.getInputStream(), pt2.getInputStream());
+//		
+//		try {
+//			Thread.sleep(5000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		String result = p.runner();
+
 		
+		Comparator cs = new ComparatorService();
+	
+		//Create 2 book objects 1 from db the other from here
+		DataStore ds = new DataStore(pt2.getInputStream());
+
+		Book dbBook = ds.getBook(); // db will set up the book
+		
+		Book bk = new Book(); // set up a book manually here
+		
+		FileParser fp = new FileParser(part.getName());
+		try {
+			bk.setShingleData(fp.readInputStream(part.getInputStream()));
+			bk.setHashData(fp.getHashTable());
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		float difference = cs.compare(bk.getShingleData(), dbBook.getShingleData());
+		
+		String result = difference + "%<br>" + cs.getSimilarity();
+		ds.shutDown();
+	
 		//Step 4) Process the input and write out the response. 
 		//The following string should be extracted as a context from web.xml 
 		out.print("<html><head><title>A JEE Application for Measuring Document Similarity</title>");		
 		out.print("</head>");		
 		out.print("<body>");
-		
+		//out.print("INPUT STREAM BOOK <br>"+bk.getShingleData());
+		//out.print("DB BOOK<br>"+dbBook.getShingleData());
 		//We could use the following to track asynchronous tasks. Comment it out otherwise...
-		if (taskNumber == null){
-			taskNumber = new String("T" + jobNumber);
-			jobNumber++;
-			//Add job to in-queue
-		}else{
-			RequestDispatcher dispatcher = req.getRequestDispatcher("/poll");
-			dispatcher.forward(req,resp);
-			//Check out-queue for finished job with the given taskNumber
-		}
-		
+//		if (taskNumber == null){
+//			taskNumber = new String("T" + jobNumber);
+//			jobNumber++;
+//			//Add job to in-queue
+//		}else{
+//			RequestDispatcher dispatcher = req.getRequestDispatcher("/poll");
+//			dispatcher.forward(req,resp);
+//			//Check out-queue for finished job with the given taskNumber
+//		}
+		//out.print(cs.compare(dbBook.getShingleData(), bk.getShingleData()));
 		//Output some headings at the top of the generated page
 		out.print("<H1>Processing request for Job#: " + taskNumber + "</H1>");
-		out.print("<H3>Document Title: " + title + "</H3>");
-		
-		
-		//Output some useful information for you (yes YOU!)
-		out.print("<div id=\"r\"></div>");
-		out.print("<font color=\"#993333\"><b>");
-		out.print("result from comparison: " + result);
-		out.print("<br>This servlet should only be responsible for handling client request and returning responses. Everything else should be handled by different objects.");
-		out.print("Note that any variables declared inside this doGet() method are thread safe. Anything defined at a class level is shared between HTTP requests.");				
-		out.print("</b></font>");
-		
-		out.print("<h3>Compiling and Packaging this Application</h3>");
-		out.print("Place any servlets or Java classes in the WEB-INF/classes directory. Alternatively package "); 
-		out.print("these resources as a JAR archive in the WEB-INF/lib directory using by executing the ");  
-		out.print("following command from the WEB-INF/classes directory jar -cf my-library.jar *");
-		
-		out.print("<ol>");
-		out.print("<li><b>Compile on Mac/Linux:</b> javac -cp .:$TOMCAT_HOME/lib/servlet-api.jar WEB-INF/classes/ie/gmit/sw/*.java");
-		out.print("<li><b>Compile on Windows:</b> javac -cp .;%TOMCAT_HOME%/lib/servlet-api.jar WEB-INF/classes/ie/gmit/sw/*.java");
-		out.print("<li><b>Build JAR Archive:</b> jar -cf jaccard.war *");
-		out.print("</ol>");
+		out.print("<H3>Document Title: " + part.getName() +" vs "+ pt2.getName() + "</H3>");
 		
 		//We can also dynamically write out a form using hidden form fields. The form itself is not
 		//visible in the browser, but the JavaScript below can see it.
 		out.print("<form name=\"frmRequestDetails\" action=\"poll\">");
-		out.print("<input name=\"txtTitle\" type=\"hidden\" value=\"" + title + "\">");
+		out.print("<input name=\"txtTitle\" type=\"hidden\" value=\"" + part.getName() +" vs "+ pt2.getName() + "\">");
 		out.print("<input name=\"frmTaskNumber\" type=\"hidden\" value=\"" + taskNumber + "\">");
 		out.print("<input name=\"result\" type=\"hidden\" value=\"" + result + "\">");
 		out.print("</form>");								
@@ -117,29 +131,6 @@ public class ServiceHandler extends HttpServlet {
 		out.print("</script>");
 		
 		
-			
-		/* File Upload: The following few lines read the multipart/form-data from an instance of the
-		 * interface Part that is accessed by Part part = req.getPart("txtDocument"). We can read 
-		 * bytes or arrays of bytes by calling read() on the InputStream of the Part object. In this
-		 * case, we are only interested in text files, so it's as easy to buffer the bytes as characters
-		 * to enable the servlet to read the uploaded file line-by-line. Note that the uplaod action
-		 * can be easily completed by writing the file to disk if necessary. The following lines just
-		 * read the document from memory... this might not be a good idea if the file size is large!
-		 */
-		out.print("<h3>Uploaded Document</h3>");	
-		out.print("<font color=\"0000ff\">");	
-		
-
-//		BufferedReader br = new BufferedReader(new InputStreamReader(part.getInputStream()));
-//		String line = null;
-//		while ((line = br.readLine()) != null) {
-//			//Break each line up into shingles and do something. The servlet really should act as a
-//			//contoller and dispatch this task to something else... Divide and conquer...! I've been
-//			//telling you all this since 2nd year...!
-//			out.print(line);
-//		}
-		
-		out.print("</font>");	
 	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

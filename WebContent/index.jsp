@@ -12,11 +12,17 @@
 				<fieldset>
 					<legend><h3>Specify Details</h3></legend>
 
-					<b>Document Title :</b><br>
+					<b>Document 1</b><br>
 					<input name="txtTitle" type="text" size="50"/>
 					<p/>
 					<input type="file" name="txtDocument"/>
+					<br>
+					<b>Document 2</b><br>
+					<input name="dbFile" type="file"/>
 					<center><input type="submit" value="Compare Document"></center>
+		
+					
+					
 				</fieldset>							
 			</form>	
 

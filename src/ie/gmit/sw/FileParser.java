@@ -13,41 +13,20 @@ import java.util.Map;
 public class FileParser {
 
 	private File file;
-	private InputStream is;
+//	private InputStream is;
 	private List<Integer> shingles;
 	private static Map<Integer, String> hashTable;
 
 	public FileParser(String filename) {
 		this.file = new File(filename);
 		this.shingles = new LinkedList<Integer>();
-		this.hashTable = new HashMap<Integer, String>();
+		FileParser.hashTable = new HashMap<Integer, String>();
 	}// constructor
 	
-	public FileParser(InputStream is) {
-		this.is = is;
-		this.shingles = new LinkedList<Integer>();
-		this.hashTable = new HashMap<Integer, String>();
-	}
-
-	/*
-	 * ReadFile read in a file and add shingles to a list
-	 * 
-	 */
-	public List<Integer> readFile() throws Exception {
+	// parse whatever is in the buffered reader and return a list of shingles
+	public List<Integer> parse(BufferedReader br) throws Exception{
 		String shingle = "";
 		int i = 0;
-		BufferedReader br = null;
-
-	
-		if(file != null) {
-			br = new BufferedReader(new FileReader(file)); // read the file passed into our constructo
-			System.out.println("using file reader");
-		} else {
-			br = new BufferedReader(new InputStreamReader(is)); // otherwise read the file as an input stream
-			System.out.println("Using input stream reader");
-		}
-		
-		
 		String line = null;
 
 		while ((line = br.readLine()) != null) { // read in each line while its not null
@@ -67,6 +46,25 @@ public class FileParser {
 		} // while were reading the file
 		System.out.println(file.getName() + " has been shingled...");
 		return this.shingles;
+	}//parse
+	
+	
+	// Read in an input stream and return shingles list
+	public List<Integer> readInputStream(InputStream is) throws Exception {
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(is)); // read the file as an input stream
+		System.out.println("Using input stream reader");
+
+		return parse(br);// parse the buffered reader and return the result of that
+	}// read the file
+	
+	//ReadFile read in a file and add shingles to a list
+	public List<Integer> readFile() throws Exception {
+
+		BufferedReader br = new BufferedReader(new FileReader(file)); // read the file passed into our constructor
+		System.out.println("using file reader");
+
+		return parse(br);// parse the buffered reader and return the result of that
 	}// read the file
 
 	/*
@@ -87,7 +85,7 @@ public class FileParser {
 		this.file = new File(fileName);
 	}
 
-	public static Map<Integer, String> getHashTable() {
+	public Map<Integer, String> getHashTable() {
 		return hashTable;
 	}
 
